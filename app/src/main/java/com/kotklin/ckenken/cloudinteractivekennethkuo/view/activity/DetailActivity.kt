@@ -4,14 +4,8 @@ import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
-import androidx.lifecycle.lifecycleScope
 import com.kotklin.ckenken.cloudinteractivekennethkuo.R
-import com.kotklin.ckenken.cloudinteractivekennethkuo.view.util.ImageProcessingHelper
 import kotlinx.android.synthetic.main.activity_detail.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DetailActivity : AppCompatActivity() {
     companion object {
