@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".view.activity.DetailActivity">
+
+    <ImageView
+        android:id="@+id/detailImage"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" />
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/detailId"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            tools:text="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/detail_id_text_size" />
+
+        <TextView
+            android:id="@+id/detailTitle"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            tools:text="accusamus beatae ad facilis cum similique qui sunt"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:maxLines="2"
+            android:textSize="@dimen/detail_title_text_size" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

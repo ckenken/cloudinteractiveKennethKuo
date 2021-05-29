@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="photo_item_id_text_size">20sp</dimen>
+    <dimen name="photo_item_title_text_size">12sp</dimen>
+    <dimen name="detail_id_text_size">32sp</dimen>
+    <dimen name="detail_title_text_size">20sp</dimen>
+</resources>
