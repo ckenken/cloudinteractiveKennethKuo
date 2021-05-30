@@ -13,16 +13,15 @@ import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModel
 import kotlinx.android.synthetic.main.activity_listing.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class ListingActivity : AppCompatActivity() {
 
     private val viewModel by lazy {
         ViewModelProviders.of(this).get(ListingViewModel::class.java)
     }
 
-    @ExperimentalCoroutinesApi
     private val photoListAdapter by lazy { PhotoListAdapter(arrayListOf(), lifecycleScope) }
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_listing)

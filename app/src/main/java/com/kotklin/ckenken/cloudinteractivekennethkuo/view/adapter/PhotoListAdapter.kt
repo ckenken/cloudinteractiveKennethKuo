@@ -54,7 +54,6 @@ class PhotoListAdapter(private val photoItemList: ArrayList<PhotoItem>,
             photoId.text = photoItem.photoId.toString()
             photoTitle.text = photoItem.title
             coroutineScope.launch(Dispatchers.Main) {
-//                imageView.loadImage(photoItem.thumbnailUrl)
                 val cacheFileName = ImageProcessingHelper.convertUrlToFileName(photoItem.thumbnailUrl)
                 if (ImageProcessingHelper.isImageCacheFileExist(imageView.context, cacheFileName)) {
                     imageView.setImageBitmap(ImageProcessingHelper.loadLocalImage(imageView.context, cacheFileName))

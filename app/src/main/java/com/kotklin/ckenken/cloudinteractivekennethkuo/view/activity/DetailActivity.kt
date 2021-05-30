@@ -27,5 +27,9 @@ class DetailActivity : AppCompatActivity() {
             val bitmap = BitmapFactory.decodeFile(thumbnailPath)
             detailImage.setImageBitmap(bitmap)
         }
+
+        detailContainer.setOnClickListener {
+            onBackPressed()
+        }
     }
 }
