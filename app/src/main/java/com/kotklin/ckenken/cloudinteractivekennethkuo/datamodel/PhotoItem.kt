@@ -1,6 +1,7 @@
 package com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import com.google.gson.annotations.SerializedName
 
 data class PhotoItem(
@@ -14,5 +15,5 @@ data class PhotoItem(
     val url: String,
     @SerializedName("thumbnailUrl")
     val thumbnailUrl: String,
-    var localThumbnailUri: Bitmap
+    var localThumbnail: Drawable?
 )

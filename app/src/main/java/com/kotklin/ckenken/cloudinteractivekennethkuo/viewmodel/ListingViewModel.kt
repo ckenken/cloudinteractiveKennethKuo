@@ -22,17 +22,18 @@ class ListingViewModel : ViewModel() {
     val photoItemList = MutableLiveData<List<PhotoItem>>()
 
     val loadingErrorMessage = MutableLiveData<String>()
-    val isDataLoading = MutableLiveData<Boolean>()
+
+    val isDataRequesting = MutableLiveData<Boolean>()
 
     fun refreshData() {
-        isDataLoading.value = true
+        isDataRequesting.value = true
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             val response = albumService.getPhotoItemList()
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {
                     photoItemList.value = response.body()
                     loadingErrorMessage.value = ""
-                    isDataLoading.value = false
+                    isDataRequesting.value = false
                 }
             } else {
                 onError("refresh data error!")
@@ -43,7 +44,7 @@ class ListingViewModel : ViewModel() {
     private fun onError(message: String) {
         viewModelScope.launch(Dispatchers.Main) {
             loadingErrorMessage.value = message
-            isDataLoading.value = false
+            isDataRequesting.value = false
         }
     }
 }

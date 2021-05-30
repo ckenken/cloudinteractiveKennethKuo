@@ -4,27 +4,34 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
-import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
+import java.net.URL
+import java.util.concurrent.Executors
+import javax.net.ssl.HttpsURLConnection
+import kotlin.coroutines.CoroutineContext
 
-@ExperimentalCoroutinesApi
 object ImageProcessingHelper {
     private const val TAG = "ImageDownloadHelper"
     private const val IMAGE_FOLDER_NAME = "image"
+    private val THREAD_LIMIT_NUM = Runtime.getRuntime().availableProcessors()
+    private val limitedDispatcher = LimitedDispatcher()
+
+    class LimitedDispatcher : CoroutineDispatcher() {
+        private val execService = Executors.newFixedThreadPool(THREAD_LIMIT_NUM)
+        override fun dispatch(context: CoroutineContext, block: Runnable) {
+            execService.submit(block)
+        }
+    }
 
     fun convertUrlToFileName(url: String): String {
         return url.replace("/", "-") + ".png"
     }
 
-    suspend fun getCacheImageFolder(context: Context): File = withContext(Dispatchers.IO) {
+    private suspend fun getCacheImageFolder(context: Context): File = withContext(Dispatchers.IO) {
         val dir = File(context.cacheDir.path, IMAGE_FOLDER_NAME)
         if (!dir.exists()) {
             dir.mkdir()
@@ -42,29 +49,19 @@ object ImageProcessingHelper {
         return BitmapFactory.decodeFile(file.path)
     }
 
-    fun downloadImage(url: String): Flow<Bitmap> =
-        callbackFlow<Bitmap> {
-            val client = OkHttpClient()
-            val request: Request = Request.Builder()
-                .url(url)
-                .build()
-
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    Log.e(TAG, "downloadImage onFailure() error", e)
-                    trySend(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)).isFailure
-                    close()
+    suspend fun downloadImage(url: String): Bitmap? = withContext(limitedDispatcher) {
+        try {
+            val connection = URL(url).openConnection().apply {
+                if (this is HttpsURLConnection) {
+                    addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0");
                 }
-
-                override fun onResponse(call: Call, response: Response) {
-                    val stream = response.body()?.byteStream()
-                    val bitmap = BitmapFactory.decodeStream(stream)
-                    trySend(bitmap).isSuccess
-                    close()
-                }
-            })
-            awaitClose()
+            }
+            return@withContext BitmapFactory.decodeStream(connection.getInputStream())
+        } catch (e: Exception) {
+            Log.e(TAG, "downloadImage() error! ", e)
+            return@withContext null
         }
+    }
 
     suspend fun saveFile(context: Context, fileName: String, bitmap: Bitmap): Boolean = withContext(Dispatchers.IO) {
         try {
