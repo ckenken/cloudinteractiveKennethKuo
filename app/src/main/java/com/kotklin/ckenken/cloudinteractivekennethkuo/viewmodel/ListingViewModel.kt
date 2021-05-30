@@ -46,7 +46,7 @@ class ListingViewModel(private val application: Application) : ViewModel() {
 
     fun refreshLocalThumbnail(photoItem: PhotoItem) {
         viewModelScope.launch(Dispatchers.Main + exceptionHandler) {
-            ImageFileManager.getLocalImageBitmap(application, photoItem.thumbnailUrl)?.apply {
+            ImageFileManager.getLocalImageBitmap(application, photoItem.thumbnailUrl, false)?.apply {
                 photoItem.localThumbnail.value = BitmapDrawable(application.resources, this)
             }
         }

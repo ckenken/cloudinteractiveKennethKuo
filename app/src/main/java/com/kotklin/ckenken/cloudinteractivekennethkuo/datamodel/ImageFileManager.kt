@@ -27,12 +27,15 @@ object ImageFileManager {
         }
     }
 
-    suspend fun getLocalImageBitmap(context: Context, url: String): Bitmap? = withContext(Dispatchers.IO) {
+    suspend fun getLocalImageBitmap(context: Context, url: String, isQuickDownload: Boolean): Bitmap? = withContext(Dispatchers.IO) {
         return@withContext if (isImageCacheFileExist(context, url)) {
             loadLocalImage(context, url)
         } else {
-            downloadImage(url)?.apply {
-                saveFile(context, url, this)
+            val dispatcher = if (isQuickDownload) Dispatchers.IO else limitedDispatcher
+            withContext(dispatcher) {
+                downloadImage(url)?.apply {
+                    saveFile(context, url, this)
+                }
             }
         }
     }
@@ -61,17 +64,17 @@ object ImageFileManager {
         return BitmapFactory.decodeFile(file.path)
     }
 
-    private suspend fun downloadImage(url: String): Bitmap? = withContext(limitedDispatcher) {
-        try {
+    private suspend fun downloadImage(url: String): Bitmap? {
+        return try {
             val connection = URL(url).openConnection().apply {
                 if (this is HttpsURLConnection) {
                     addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0");
                 }
             }
-            return@withContext BitmapFactory.decodeStream(connection.getInputStream())
+            BitmapFactory.decodeStream(connection.getInputStream())
         } catch (e: Exception) {
             Log.e(TAG, "downloadImage() error! ", e)
-            return@withContext null
+            null
         }
     }
 

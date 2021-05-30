@@ -31,7 +31,7 @@ class DetailViewModel(private val application: Application) : ViewModel() {
     fun refreshLocalThumbnail(thumbnailUrl: String) {
         viewModelScope.launch(Dispatchers.Main + exceptionHandler) {
             isThumbnailProcessing.value = true
-            ImageFileManager.getLocalImageBitmap(application, thumbnailUrl)?.apply {
+            ImageFileManager.getLocalImageBitmap(application, thumbnailUrl, true)?.apply {
                 localThumbnail.value = BitmapDrawable(application.resources, this)
             }
             isThumbnailProcessing.value = false
