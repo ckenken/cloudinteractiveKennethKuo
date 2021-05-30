@@ -64,7 +64,7 @@ object ImageFileManager {
         return BitmapFactory.decodeFile(file.path)
     }
 
-    private suspend fun downloadImage(url: String): Bitmap? {
+    private fun downloadImage(url: String): Bitmap? {
         return try {
             val connection = URL(url).openConnection().apply {
                 if (this is HttpsURLConnection) {
