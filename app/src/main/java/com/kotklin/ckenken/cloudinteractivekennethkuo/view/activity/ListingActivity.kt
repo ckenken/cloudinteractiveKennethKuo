@@ -6,22 +6,21 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kotklin.ckenken.cloudinteractivekennethkuo.R
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
 import com.kotklin.ckenken.cloudinteractivekennethkuo.view.adapter.PhotoListAdapter
-import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.BasicModelFactory
+import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModelFactory
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModel
 import kotlinx.android.synthetic.main.activity_listing.*
 
-class ListingActivity : AppCompatActivity(), OnPhotoClickListener {
+class ListingActivity : AppCompatActivity(), OnPhotoItemClickListener {
 
     private val viewModel by lazy {
-        ViewModelProvider(this, BasicModelFactory).get(ListingViewModel::class.java)
+        ViewModelProvider(this, ListingViewModelFactory(application)).get(ListingViewModel::class.java)
     }
 
-    private val photoListAdapter by lazy { PhotoListAdapter(arrayListOf(), this, lifecycleScope) }
+    private val photoListAdapter by lazy { PhotoListAdapter(arrayListOf(), this, viewModel) }
 
     override fun onClick(photoItem: PhotoItem) {
         val intent = getRedirectIntent(photoItem)
@@ -40,14 +39,13 @@ class ListingActivity : AppCompatActivity(), OnPhotoClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_listing)
 
-        viewModel.refreshData()
-
         photoItemListView.apply {
             layoutManager = GridLayoutManager(context, 4)
             adapter = photoListAdapter
         }
 
         observeViewModel()
+        viewModel.refreshData()
     }
 
     private fun observeViewModel() {

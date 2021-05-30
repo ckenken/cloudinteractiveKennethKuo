@@ -1,14 +1,17 @@
 package com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel
 
+import android.app.Application
+import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.AlbumService
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
+import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.ImageFileManager
 import kotlinx.coroutines.*
 
-class ListingViewModel : ViewModel() {
+class ListingViewModel(private val application: Application) : ViewModel() {
     companion object {
         const val TAG = "ListingViewModel"
     }
@@ -37,6 +40,14 @@ class ListingViewModel : ViewModel() {
                 }
             } else {
                 onError("refresh data error!")
+            }
+        }
+    }
+
+    fun refreshLocalThumbnail(photoItem: PhotoItem) {
+        viewModelScope.launch(Dispatchers.Main + exceptionHandler) {
+            ImageFileManager.getLocalImageBitmap(application, photoItem.thumbnailUrl)?.apply {
+                photoItem.localThumbnail.value = BitmapDrawable(application.resources, this)
             }
         }
     }

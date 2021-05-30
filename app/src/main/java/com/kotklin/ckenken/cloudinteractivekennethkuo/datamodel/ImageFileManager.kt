@@ -1,4 +1,4 @@
-package com.kotklin.ckenken.cloudinteractivekennethkuo.view.util
+package com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -14,7 +14,7 @@ import java.util.concurrent.Executors
 import javax.net.ssl.HttpsURLConnection
 import kotlin.coroutines.CoroutineContext
 
-object ImageProcessingHelper {
+object ImageFileManager {
     private const val TAG = "ImageDownloadHelper"
     private const val IMAGE_FOLDER_NAME = "image"
     private val THREAD_LIMIT_NUM = Runtime.getRuntime().availableProcessors()
@@ -27,7 +27,17 @@ object ImageProcessingHelper {
         }
     }
 
-    fun convertUrlToFileName(url: String): String {
+    suspend fun getLocalImageBitmap(context: Context, url: String): Bitmap? = withContext(Dispatchers.IO) {
+        return@withContext if (isImageCacheFileExist(context, url)) {
+            loadLocalImage(context, url)
+        } else {
+            downloadImage(url)?.apply {
+                saveFile(context, url, this)
+            }
+        }
+    }
+
+    private fun convertUrlToFileName(url: String): String {
         return url.replace("/", "-") + ".png"
     }
 
@@ -39,17 +49,19 @@ object ImageProcessingHelper {
         return@withContext dir
     }
 
-    suspend fun isImageCacheFileExist(context: Context, fileName: String): Boolean = withContext(Dispatchers.IO) {
+    private suspend fun isImageCacheFileExist(context: Context, url: String): Boolean = withContext(Dispatchers.IO) {
+        val fileName = convertUrlToFileName(url)
         val file = File(getCacheImageFolder(context), fileName)
         return@withContext file.exists()
     }
 
-    suspend fun loadLocalImage(context: Context, fileName: String): Bitmap? {
+    private suspend fun loadLocalImage(context: Context, url: String): Bitmap? {
+        val fileName = convertUrlToFileName(url)
         val file = File(getCacheImageFolder(context), fileName)
         return BitmapFactory.decodeFile(file.path)
     }
 
-    suspend fun downloadImage(url: String): Bitmap? = withContext(limitedDispatcher) {
+    private suspend fun downloadImage(url: String): Bitmap? = withContext(limitedDispatcher) {
         try {
             val connection = URL(url).openConnection().apply {
                 if (this is HttpsURLConnection) {
@@ -63,8 +75,9 @@ object ImageProcessingHelper {
         }
     }
 
-    suspend fun saveFile(context: Context, fileName: String, bitmap: Bitmap): Boolean = withContext(Dispatchers.IO) {
+    private suspend fun saveFile(context: Context, url: String, bitmap: Bitmap): Boolean = withContext(Dispatchers.IO) {
         try {
+            val fileName = convertUrlToFileName(url)
             val newFile = File(getCacheImageFolder(context).path, fileName)
             FileOutputStream(newFile).use {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)

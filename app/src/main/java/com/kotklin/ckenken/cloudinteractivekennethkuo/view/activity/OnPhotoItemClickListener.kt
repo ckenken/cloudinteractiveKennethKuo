@@ -2,6 +2,6 @@ package com.kotklin.ckenken.cloudinteractivekennethkuo.view.activity
 
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
 
-interface OnPhotoClickListener {
+interface OnPhotoItemClickListener {
     fun onClick(photoItem: PhotoItem)
 }

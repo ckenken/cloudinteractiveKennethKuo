@@ -6,7 +6,7 @@ import android.text.TextUtils
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.kotklin.ckenken.cloudinteractivekennethkuo.R
-import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.BasicModelFactory
+import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.DetailViewModelFactory
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.activity_detail.*
 
@@ -18,7 +18,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private val viewModel by lazy {
-        ViewModelProvider(this, BasicModelFactory).get(DetailViewModel::class.java)
+        ViewModelProvider(this, DetailViewModelFactory(application)).get(DetailViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +34,6 @@ class DetailActivity : AppCompatActivity() {
         viewModel.localThumbnail.observe(this, {
             detailImage.setImageDrawable(it)
         })
-
-        viewModel.refreshLocalThumbnail(this, thumbnailPath!!)
 
         viewModel.loadingErrorMessage.observe(this, { errorMessage ->
             loadingError.text = errorMessage
@@ -53,6 +51,8 @@ class DetailActivity : AppCompatActivity() {
                 detailTitle.visibility = View.VISIBLE
             }
         }
+
+        viewModel.refreshLocalThumbnail(thumbnailPath!!)
 
         detailContainer.setOnClickListener {
             onBackPressed()
