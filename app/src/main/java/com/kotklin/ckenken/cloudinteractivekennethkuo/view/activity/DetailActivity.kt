@@ -4,8 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.kotklin.ckenken.cloudinteractivekennethkuo.R
+import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.BasicModelFactory
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.activity_detail.*
 
@@ -17,7 +18,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(DetailViewModel::class.java)
+        ViewModelProvider(this, BasicModelFactory).get(DetailViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,15 +39,16 @@ class DetailActivity : AppCompatActivity() {
 
         viewModel.loadingErrorMessage.observe(this, { errorMessage ->
             loadingError.text = errorMessage
-            loadingError.visibility = if(TextUtils.isEmpty(errorMessage)) View.GONE else View.VISIBLE
+            loadingError.visibility = if (TextUtils.isEmpty(errorMessage)) View.GONE else View.VISIBLE
         })
 
         viewModel.isThumbnailProcessing.observe(this) { isLoading ->
-            loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
             if (isLoading) {
+                loadingView.visibility = View.VISIBLE
                 detailId.visibility = View.GONE
                 detailTitle.visibility = View.GONE
             } else {
+                loadingView.visibility = View.GONE
                 detailId.visibility = View.VISIBLE
                 detailTitle.visibility = View.VISIBLE
             }

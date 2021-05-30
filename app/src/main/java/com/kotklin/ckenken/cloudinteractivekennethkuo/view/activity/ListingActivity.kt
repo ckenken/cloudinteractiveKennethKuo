@@ -5,19 +5,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kotklin.ckenken.cloudinteractivekennethkuo.R
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
 import com.kotklin.ckenken.cloudinteractivekennethkuo.view.adapter.PhotoListAdapter
+import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.BasicModelFactory
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModel
 import kotlinx.android.synthetic.main.activity_listing.*
 
 class ListingActivity : AppCompatActivity(), OnPhotoClickListener {
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(ListingViewModel::class.java)
+        ViewModelProvider(this, BasicModelFactory).get(ListingViewModel::class.java)
     }
 
     private val photoListAdapter by lazy { PhotoListAdapter(arrayListOf(), this, lifecycleScope) }
