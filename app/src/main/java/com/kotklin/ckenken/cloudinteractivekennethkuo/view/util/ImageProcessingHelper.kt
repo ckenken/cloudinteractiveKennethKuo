@@ -52,6 +52,7 @@ object ImageProcessingHelper {
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     Log.e(TAG, "downloadImage onFailure() error", e)
+                    trySend(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)).isFailure
                     close()
                 }
 

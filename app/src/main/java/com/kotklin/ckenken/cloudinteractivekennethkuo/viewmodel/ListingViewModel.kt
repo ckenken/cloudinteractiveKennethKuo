@@ -16,6 +16,7 @@ class ListingViewModel : ViewModel() {
     private val albumService = AlbumService.getAlbumService()
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext , throwable ->
         Log.e(TAG, "coroutine error!", throwable)
+        onError(throwable.toString())
     }
 
     val photoItemList = MutableLiveData<List<PhotoItem>>()

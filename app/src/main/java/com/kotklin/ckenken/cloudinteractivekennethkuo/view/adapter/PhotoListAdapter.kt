@@ -1,6 +1,7 @@
 package com.kotklin.ckenken.cloudinteractivekennethkuo.view.adapter
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import kotlinx.android.synthetic.main.item_photo.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import java.io.File
@@ -56,7 +59,11 @@ class PhotoListAdapter(private val photoItemList: ArrayList<PhotoItem>,
                 if (ImageProcessingHelper.isImageCacheFileExist(imageView.context, cacheFileName)) {
                     imageView.setImageBitmap(ImageProcessingHelper.loadLocalImage(imageView.context, cacheFileName))
                 } else {
-                    val bitmap = ImageProcessingHelper.downloadImage(photoItem.thumbnailUrl).single()
+                    val bitmap = ImageProcessingHelper.downloadImage(photoItem.thumbnailUrl)
+                        .catch { throwable ->
+                            Log.e(TAG, "downloadImage fail", throwable)
+                        }
+                        .single()
                     imageView.setImageBitmap(bitmap)
                     ImageProcessingHelper.saveFile(imageView.context, cacheFileName, bitmap)
                 }
