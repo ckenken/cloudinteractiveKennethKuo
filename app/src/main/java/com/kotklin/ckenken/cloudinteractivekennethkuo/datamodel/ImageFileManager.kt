@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.annotation.WorkerThread
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,7 +19,7 @@ object ImageFileManager {
     private const val TAG = "ImageDownloadHelper"
     private const val IMAGE_FOLDER_NAME = "image"
     private val THREAD_LIMIT_NUM = Runtime.getRuntime().availableProcessors()
-    private val limitedDispatcher = LimitedDispatcher()
+    private val limitedDispatcher = LimitedDispatcher() // Use limited dispatcher to limit the query number in the same time.
 
     class LimitedDispatcher : CoroutineDispatcher() {
         private val execService = Executors.newFixedThreadPool(THREAD_LIMIT_NUM)
@@ -64,6 +65,7 @@ object ImageFileManager {
         return BitmapFactory.decodeFile(file.path)
     }
 
+    @WorkerThread
     private fun downloadImage(url: String): Bitmap? {
         return try {
             val connection = URL(url).openConnection().apply {

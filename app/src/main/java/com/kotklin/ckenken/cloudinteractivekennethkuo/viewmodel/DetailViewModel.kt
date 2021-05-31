@@ -18,7 +18,7 @@ class DetailViewModel(private val application: Application) : ViewModel() {
     }
 
     private val exceptionHandler = CoroutineExceptionHandler { coroutineContext , throwable ->
-        Log.e(ListingViewModel.TAG, "coroutine error!", throwable)
+        Log.e(TAG, "coroutine error!", throwable)
         onError(throwable.toString())
     }
 

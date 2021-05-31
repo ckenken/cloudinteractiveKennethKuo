@@ -31,6 +31,18 @@ class DetailActivity : AppCompatActivity() {
         detailId.text = id.toString()
         detailTitle.text = title
 
+        observeViewModel()
+
+        if (thumbnailPath != null) {
+            viewModel.refreshLocalThumbnail(thumbnailPath)
+        }
+
+        detailContainer.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    private fun observeViewModel() {
         viewModel.localThumbnail.observe(this, {
             detailImage.setImageDrawable(it)
         })
@@ -50,14 +62,6 @@ class DetailActivity : AppCompatActivity() {
                 detailId.visibility = View.VISIBLE
                 detailTitle.visibility = View.VISIBLE
             }
-        }
-
-        if (thumbnailPath != null) {
-            viewModel.refreshLocalThumbnail(thumbnailPath)
-        }
-
-        detailContainer.setOnClickListener {
-            onBackPressed()
         }
     }
 }

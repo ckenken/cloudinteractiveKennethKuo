@@ -15,5 +15,7 @@ data class PhotoItem(
     val url: String,
     @SerializedName("thumbnailUrl")
     val thumbnailUrl: String,
+
+    // Not in API response
     var localThumbnail: MutableLiveData<Drawable?>
 )
