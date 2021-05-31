@@ -52,7 +52,9 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.refreshLocalThumbnail(thumbnailPath!!)
+        if (thumbnailPath != null) {
+            viewModel.refreshLocalThumbnail(thumbnailPath)
+        }
 
         detailContainer.setOnClickListener {
             onBackPressed()
