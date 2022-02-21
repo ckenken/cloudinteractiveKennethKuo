@@ -14,7 +14,9 @@
         android:theme="@style/Theme.CloudinteractiveKennethKuo">
         <activity android:name=".view.activity.DetailActivity" />
         <activity android:name=".view.activity.ListingActivity" />
-        <activity android:name=".view.activity.MainActivity">
+        <activity
+            android:name=".view.activity.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,20 +1,19 @@
-package com.kotklin.ckenken.cloudinteractivekennethkuo.view.adapter
+package com.example.myapplication.view.adapter
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
-import com.kotklin.ckenken.cloudinteractivekennethkuo.R
+import com.kotklin.ckenken.cloudinteractivekennethkuo.databinding.ItemPhotoBinding
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
 import com.kotklin.ckenken.cloudinteractivekennethkuo.view.activity.ListingActivity
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModel
-import kotlinx.android.synthetic.main.item_photo.view.*
 
 class PhotoListAdapter(private val photoItemList: ArrayList<PhotoItem>,
                        private val listingActivity: ListingActivity,
-                       private val viewModel: ListingViewModel): RecyclerView.Adapter<PhotoListAdapter.PhotoViewHolder>() {
+                       private val viewModel: ListingViewModel
+): RecyclerView.Adapter<PhotoListAdapter.PhotoViewHolder>() {
 
     companion object {
         private const val TAG = "PhotoListAdapter"
@@ -30,7 +29,7 @@ class PhotoListAdapter(private val photoItemList: ArrayList<PhotoItem>,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int) = PhotoViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_photo, parent, false)
+        ItemPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun getItemCount() = photoItemList.size
@@ -42,19 +41,19 @@ class PhotoListAdapter(private val photoItemList: ArrayList<PhotoItem>,
         }
     }
 
-    inner class PhotoViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        private val photoImage = view.photoItemImage
-        private val photoId = view.photoItemId
-        private val photoTitle = view.photoItemTitle
+    inner class PhotoViewHolder(itemViewBinding: ItemPhotoBinding): RecyclerView.ViewHolder(itemViewBinding.root) {
+        private val photoImage = itemViewBinding.photoItemImage
+        private val photoId = itemViewBinding.photoItemId
+        private val photoTitle = itemViewBinding.photoItemTitle
 
         fun bind(photoItem: PhotoItem, position: Int) {
             photoId.text = photoItem.photoId.toString()
             photoTitle.text = photoItem.title
             photoImage.setImageDrawable(photoItem.localThumbnail.value)
             if (photoItem.localThumbnail.value == null) {
-                photoItem.localThumbnail.observe(listingActivity, {
+                photoItem.localThumbnail.observe(listingActivity) {
                     notifyItemChanged(position)
-                })
+                }
                 viewModel.refreshLocalThumbnail(photoItem)
             }
         }

@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.AlbumService
-import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.ImageFileManager
+import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
 import kotlinx.coroutines.*
 
 class ListingViewModel(private val application: Application) : ViewModel() {

@@ -7,18 +7,19 @@ import android.text.TextUtils
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.kotklin.ckenken.cloudinteractivekennethkuo.R
+import com.example.myapplication.view.adapter.PhotoListAdapter
+import com.kotklin.ckenken.cloudinteractivekennethkuo.databinding.ActivityListingBinding
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
-import com.kotklin.ckenken.cloudinteractivekennethkuo.view.adapter.PhotoListAdapter
-import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModelFactory
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModel
-import kotlinx.android.synthetic.main.activity_listing.*
+import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModelFactory
 
 class ListingActivity : AppCompatActivity(), OnPhotoItemClickListener {
 
     private val viewModel by lazy {
         ViewModelProvider(this, ListingViewModelFactory(application)).get(ListingViewModel::class.java)
     }
+
+    private lateinit var viewBinding : ActivityListingBinding
 
     private val photoListAdapter by lazy { PhotoListAdapter(arrayListOf(), this, viewModel) }
 
@@ -37,9 +38,14 @@ class ListingActivity : AppCompatActivity(), OnPhotoItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_listing)
+//        setContentView(R.layout.activity_listing)
 
-        photoItemListView.apply {
+        ActivityListingBinding.inflate(layoutInflater, findViewById(android.R.id.content), false).also {
+            viewBinding = it
+            setContentView(it.root)
+        }
+
+        viewBinding.photoItemListView.apply {
             layoutManager = GridLayoutManager(context, 4)
             adapter = photoListAdapter
         }
@@ -49,20 +55,23 @@ class ListingActivity : AppCompatActivity(), OnPhotoItemClickListener {
     }
 
     private fun observeViewModel() {
-        viewModel.photoItemList.observe(this, { photoList ->
-            photoItemListView.visibility = View.VISIBLE
-            photoListAdapter.updatePhotoList(photoList)
-        })
+        viewBinding.apply {
+            viewModel.photoItemList.observe(this@ListingActivity) { photoList ->
+                photoItemListView.visibility = View.VISIBLE
+                photoListAdapter.updatePhotoList(photoList)
+            }
 
-        viewModel.loadingErrorMessage.observe(this, { isError ->
-            listingError.visibility = if(TextUtils.isEmpty(isError)) View.GONE else View.VISIBLE
-        })
+            viewModel.loadingErrorMessage.observe(this@ListingActivity) { isError ->
+                listingError.visibility =
+                    if (TextUtils.isEmpty(isError)) View.GONE else View.VISIBLE
+            }
 
-        viewModel.isDataRequesting.observe(this) { isLoading ->
-            loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
-            if (isLoading) {
-                listingError.visibility = View.GONE
-                photoItemListView.visibility = View.GONE
+            viewModel.isDataRequesting.observe(this@ListingActivity) { isLoading ->
+                loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
+                if (isLoading) {
+                    listingError.visibility = View.GONE
+                    photoItemListView.visibility = View.GONE
+                }
             }
         }
     }
