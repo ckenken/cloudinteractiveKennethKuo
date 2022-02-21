@@ -38,7 +38,6 @@ class ListingActivity : AppCompatActivity(), OnPhotoItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_listing)
 
         ActivityListingBinding.inflate(layoutInflater, findViewById(android.R.id.content), false).also {
             viewBinding = it
