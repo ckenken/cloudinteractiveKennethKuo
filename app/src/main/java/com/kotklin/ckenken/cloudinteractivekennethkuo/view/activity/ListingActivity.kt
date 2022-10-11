@@ -7,9 +7,9 @@ import android.text.TextUtils
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.myapplication.view.adapter.PhotoListAdapter
+import com.kotklin.ckenken.cloudinteractivekennethkuo.view.adapter.PhotoListAdapter
 import com.kotklin.ckenken.cloudinteractivekennethkuo.databinding.ActivityListingBinding
-import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
+import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.OuterPhotoItem
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModel
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModelFactory
 
@@ -23,12 +23,12 @@ class ListingActivity : AppCompatActivity(), OnPhotoItemClickListener {
 
     private val photoListAdapter by lazy { PhotoListAdapter(arrayListOf(), this, viewModel) }
 
-    override fun onClick(photoItem: PhotoItem) {
+    override fun onClick(photoItem: OuterPhotoItem) {
         val intent = getRedirectIntent(photoItem)
         startActivity(intent)
     }
 
-    private fun getRedirectIntent(photoItem: PhotoItem): Intent {
+    private fun getRedirectIntent(photoItem: OuterPhotoItem): Intent {
         val intent = Intent(this@ListingActivity, DetailActivity::class.java)
         intent.putExtra(DetailActivity.KEY_ID, photoItem.photoId)
         intent.putExtra(DetailActivity.KEY_TITLE, photoItem.title)

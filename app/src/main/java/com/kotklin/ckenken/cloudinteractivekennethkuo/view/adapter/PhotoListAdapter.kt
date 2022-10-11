@@ -1,4 +1,4 @@
-package com.example.myapplication.view.adapter
+package com.kotklin.ckenken.cloudinteractivekennethkuo.view.adapter
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -6,11 +6,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.kotklin.ckenken.cloudinteractivekennethkuo.databinding.ItemPhotoBinding
+import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.OuterPhotoItem
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
 import com.kotklin.ckenken.cloudinteractivekennethkuo.view.activity.ListingActivity
 import com.kotklin.ckenken.cloudinteractivekennethkuo.viewmodel.ListingViewModel
 
-class PhotoListAdapter(private val photoItemList: ArrayList<PhotoItem>,
+class PhotoListAdapter(private val photoItemList: ArrayList<OuterPhotoItem>,
                        private val listingActivity: ListingActivity,
                        private val viewModel: ListingViewModel
 ): RecyclerView.Adapter<PhotoListAdapter.PhotoViewHolder>() {
@@ -21,7 +22,10 @@ class PhotoListAdapter(private val photoItemList: ArrayList<PhotoItem>,
 
     fun updatePhotoList(newPhotoList: List<PhotoItem>) {
         photoItemList.clear()
-        photoItemList.addAll(newPhotoList)
+//        photoItemList.addAll(newPhotoList)
+        newPhotoList.forEach { newItem ->
+            photoItemList.add(OuterPhotoItem(newItem))
+        }
         photoItemList.map { item ->
             item.localThumbnail = MutableLiveData<Drawable?>()
         }
@@ -46,7 +50,7 @@ class PhotoListAdapter(private val photoItemList: ArrayList<PhotoItem>,
         private val photoId = itemViewBinding.photoItemId
         private val photoTitle = itemViewBinding.photoItemTitle
 
-        fun bind(photoItem: PhotoItem, position: Int) {
+        fun bind(photoItem: OuterPhotoItem, position: Int) {
             photoId.text = photoItem.photoId.toString()
             photoTitle.text = photoItem.title
             photoImage.setImageDrawable(photoItem.localThumbnail.value)

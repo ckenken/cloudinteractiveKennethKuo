@@ -1,7 +1,7 @@
 package com.kotklin.ckenken.cloudinteractivekennethkuo.view.activity
 
-import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
+import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.OuterPhotoItem
 
 interface OnPhotoItemClickListener {
-    fun onClick(photoItem: PhotoItem)
+    fun onClick(photoItem: OuterPhotoItem)
 }

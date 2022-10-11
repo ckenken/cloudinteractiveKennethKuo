@@ -2,20 +2,33 @@ package com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel
 
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PhotoItem(
-    @SerializedName("albumId")
     val albumId: Int,
-    @SerializedName("id")
-    val photoId: Int,
-    @SerializedName("title")
+    val id: Int,
     val title: String,
-    @SerializedName("url")
     val url: String,
-    @SerializedName("thumbnailUrl")
+    val thumbnailUrl: String,
+)
+
+data class OuterPhotoItem(
+    val albumId: Int,
+    val photoId: Int,
+    val title: String,
+    val url: String,
     val thumbnailUrl: String,
 
-    // Not in API response
+//     Not in API response
     var localThumbnail: MutableLiveData<Drawable?>
-)
+) {
+    constructor(photoItem: PhotoItem) : this(
+        albumId = photoItem.albumId,
+        photoId = photoItem.id,
+        title = photoItem.title,
+        url = photoItem.url,
+        thumbnailUrl = photoItem.thumbnailUrl,
+        localThumbnail = MutableLiveData<Drawable?>()
+    )
+}
