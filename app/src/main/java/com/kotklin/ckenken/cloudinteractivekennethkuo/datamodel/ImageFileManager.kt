@@ -68,7 +68,7 @@ object ImageFileManager {
     @WorkerThread
     private fun downloadImage(url: String): Bitmap? {
         return try {
-            val connection = URL(url).openConnection().apply {
+            val connection = URL("$url.jpg").openConnection().apply {
                 if (this is HttpsURLConnection) {
                     addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0");
                 }
