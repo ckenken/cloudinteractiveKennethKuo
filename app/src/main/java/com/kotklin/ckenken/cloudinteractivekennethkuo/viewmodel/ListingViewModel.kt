@@ -11,12 +11,14 @@ import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.ImageFileManager
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.OuterPhotoItem
 import com.kotklin.ckenken.cloudinteractivekennethkuo.datamodel.PhotoItem
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.net.InetSocketAddress
@@ -65,10 +67,13 @@ class ListingViewModel(private val application: Application) : ViewModel() {
             logger = Logger.DEFAULT
             level = LogLevel.ALL
         }
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
-                coerceInputValues = true
+
+        install(ContentNegotiation) {
+            json(Json{
+                prettyPrint = true
+                isLenient = true
                 ignoreUnknownKeys = true
+                coerceInputValues = true
             })
         }
     } }
@@ -79,7 +84,7 @@ class ListingViewModel(private val application: Application) : ViewModel() {
 
             val response: List<PhotoItem> = httpClient.get("https://jsonplaceholder.typicode.com/photos") {
                 Log.d("ckenken", "body = $body")
-            }
+            }.body()
 
             Log.d("ckenken", "response = $response")
 
